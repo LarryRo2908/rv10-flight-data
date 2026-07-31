@@ -1,6 +1,6 @@
 # Project Context & Rules for N205EN Flight Data
 
-When analyzing flight data in this workspace, strictly follow the guidelines defined in [AIRCRAFT_PROFILE.md](file:///Users/larryr/Documents/RV10%20AI%20Workspace/Flight_Data/reference/AIRCRAFT_PROFILE.md):
+When analyzing flight data in this workspace, strictly follow the guidelines defined in [AIRCRAFT_PROFILE.md](reference/AIRCRAFT_PROFILE.md):
 
 1. **Break-In Filtering**: Ignore data prior to **November 5, 2021** (engine break-in phase & pre-wheel-pants) when modeling current aircraft speed or fuel performance.
 2. **Wheel Pants Step Change**: Performance from **November 5, 2021 onward** reflects the +12 to +15 knot speed increase from installed wheel pants (155–163 kt TAS in cruise).
