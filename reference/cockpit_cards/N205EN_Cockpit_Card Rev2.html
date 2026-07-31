@@ -1,0 +1,345 @@
+<!-- Revision: Rev. 2 | Date: July 30, 2026 | Engine Leaning Protocol Update -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>N205EN Cockpit Kneeboard Reference Card (2-Page)</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 0.4in;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 20px;
+        }
+        .kneeboard-page {
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            background: #ffffff;
+            border: 2px solid #0f2c59;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 24px;
+            page-break-after: always;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #0f2c59;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #0f2c59;
+            letter-spacing: 0.5px;
+        }
+        .header p {
+            margin: 3px 0 0 0;
+            font-size: 12.5px;
+            color: #35598e;
+            font-weight: 500;
+        }
+        .section-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            background-color: #0f2c59;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .spec-item {
+            font-size: 12px;
+        }
+        .spec-item strong {
+            color: #0f2c59;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+            font-size: 12px;
+        }
+        th {
+            background-color: #1e3a8a;
+            color: #ffffff;
+            padding: 7px 8px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #1e3a8a;
+        }
+        td {
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+        .action-cell {
+            text-align: left;
+            font-weight: 500;
+        }
+        .highlight-cyl {
+            color: #b91c1c;
+            font-weight: 700;
+        }
+        .rule-box {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 8px 12px;
+            margin-top: 6px;
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+        }
+        .rule-box strong {
+            color: #1e40af;
+        }
+        .warning-box {
+            background: #fff7ed;
+            border-left: 4px solid #ea580c;
+            padding: 8px 12px;
+            margin-top: 6px;
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+        }
+        .warning-box strong {
+            color: #c2410c;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 10.5px;
+            color: #64748b;
+            margin-top: 14px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 6px;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .kneeboard-page { box-shadow: none; border-width: 1px; margin-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="kneeboard-page">
+    <div class="header">
+        <h1>✈️ N205EN — RV-10 COCKPIT CARD (PAGE 1)</h1>
+        <p>Engine Leaning Schedule & Cockpit Rules of Thumb (Rev. 2 — July 30, 2026)</p>
+    </div>
+
+    <div class="section-title">1. Aircraft & Fuel System Specifications</div>
+    <div class="specs-grid">
+        <div class="spec-item"><strong>Usable Fuel:</strong> 60.0 Gal Usable (2x 30.0 Gal L/R, 100LL)</div>
+        <div class="spec-item"><strong>Fuel Selector:</strong> Single-tank feed (manual switch)</div>
+        <div class="spec-item"><strong>Normal Cruise:</strong> 155 kt TAS / 11.0 GPH (6k–10k ft, ~62% Power)</div>
+        <div class="spec-item"><strong>Economy Cruise:</strong> 145 kt TAS / 10.0 GPH (deep lean)</div>
+        <div class="spec-item"><strong>Climb Target:</strong> 120–125 kt IAS / 18.0 GPH @ 1,000 ft AGL</div>
+        <div class="spec-item"><strong>Safe Range:</strong> ~670 NM (with > 1 hour fuel reserve)</div>
+    </div>
+
+    <div class="section-title">2. Climb Altitude Leaning Schedule (OAT < 80°F)</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Altimeter (MSL)</th>
+                <th>Target GPH</th>
+                <th>Avg EGT Target</th>
+                <th>Cyl #4 EGT</th>
+                <th style="text-align: left;">Cockpit Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Takeoff (SL)</strong></td>
+                <td><strong>~21.2 GPH</strong></td>
+                <td>~1,180°F</td>
+                <td class="highlight-cyl">~1,240°F</td>
+                <td class="action-cell">Full Rich for Takeoff</td>
+            </tr>
+            <tr>
+                <td><strong>1,000 ft AGL</strong></td>
+                <td><strong>18.0 GPH</strong></td>
+                <td><strong>~1,270°F</strong></td>
+                <td class="highlight-cyl">~1,325°F</td>
+                <td class="action-cell">Set Initial Lean passing 1,000 AGL (120–125 KIAS)</td>
+            </tr>
+            <tr>
+                <td><strong>2,000 – 4,000 ft</strong></td>
+                <td><strong>17.0 GPH</strong></td>
+                <td>~1,280°F</td>
+                <td class="highlight-cyl">~1,335°F</td>
+                <td class="action-cell">Lean ~1.0 GPH (~1 full turn)</td>
+            </tr>
+            <tr>
+                <td><strong>4,000 – 6,000 ft</strong></td>
+                <td><strong>16.0 GPH</strong></td>
+                <td>~1,314°F</td>
+                <td class="highlight-cyl">~1,365°F</td>
+                <td class="action-cell">Lean ~1.0 GPH (~1 full turn)</td>
+            </tr>
+            <tr>
+                <td><strong>6,000 – 8,000 ft</strong></td>
+                <td><strong>15.0 GPH</strong></td>
+                <td>~1,320°F</td>
+                <td class="highlight-cyl">~1,365°F</td>
+                <td class="action-cell">Lean ~1.0 GPH</td>
+            </tr>
+            <tr>
+                <td><strong>8,000 – 10,000 ft</strong></td>
+                <td><strong>14.0 GPH</strong></td>
+                <td>~1,314°F</td>
+                <td class="highlight-cyl">~1,355°F</td>
+                <td class="action-cell">Lean ~1.0 GPH</td>
+            </tr>
+            <tr>
+                <td><strong>10,000 – 12,000 ft</strong></td>
+                <td><strong>12.8 GPH</strong></td>
+                <td>~1,287°F</td>
+                <td class="highlight-cyl">~1,325°F</td>
+                <td class="action-cell">WOT / Fine Adjust</td>
+            </tr>
+            <tr>
+                <td><strong>12,000 – 14,000 ft</strong></td>
+                <td><strong>12.2 GPH</strong></td>
+                <td>~1,257°F</td>
+                <td class="highlight-cyl">~1,288°F</td>
+                <td class="action-cell">Transition to Cruise (set ~11.0 GPH LOP)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">3. Operational Rules of Thumb</div>
+    <div class="rule-box">
+        <strong>🎯 Standard Climb Target (OAT &lt; 80°F):</strong> At 1,000 ft AGL, adjust mixture directly to <strong>18.0 GPH</strong> / <strong>~1,325°F Cyl #4 EGT</strong> (~105°F ROP). Target airspeed: <strong>120–125 KIAS</strong>.
+    </div>
+    <div class="warning-box">
+        <strong>🔥 Hot Day Override (OAT &gt; 80°F):</strong> Maintain <strong>&ge; 19.5 GPH (Full Rich)</strong> until above 3,000 ft MSL and pitch for <strong>125–130 KIAS</strong> to ensure CHTs remain &lt; 380°F.
+    </div>
+    <div class="rule-box">
+        <strong>📉 Altitude Leaning Schedule:</strong> Turn mixture knob lean by <strong>~1.0 GPH (~1 full turn)</strong> per 2,000 ft of climb up to top of climb.
+    </div>
+    <div class="rule-box">
+        <strong>⚡ Thermal Safety Trigger:</strong> If any CHT touches <strong>380°F</strong> during climb, lower nose for +5 kt IAS and enrich mixture by +1.0 GPH.
+    </div>
+
+    <div class="footer-note">
+        N205EN RV-10 Kneeboard Card • Page 1 of 2 • Rev. 2 (July 30, 2026)
+    </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="kneeboard-page">
+    <div class="header">
+        <h1>✈️ N205EN — RV-10 COCKPIT CARD (PAGE 2)</h1>
+        <p>Flight Planning, Cruise Mode Trade-Offs & Range Envelope</p>
+    </div>
+
+    <div class="section-title">4. Cruise Performance Modes</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Mode</th>
+                <th>Cruise Speed</th>
+                <th>Fuel Flow</th>
+                <th>Efficiency</th>
+                <th style="text-align: left;">Context & Application</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Normal Cruise</strong></td>
+                <td><strong>155 kt TAS</strong></td>
+                <td><strong>11.0 GPH</strong></td>
+                <td><strong>14.1 NM/gal</strong></td>
+                <td class="action-cell">Standard cross-country (6k–10k ft, ~62% Power)</td>
+            </tr>
+            <tr>
+                <td><strong>Economy Cruise</strong></td>
+                <td><strong>145 kt TAS</strong></td>
+                <td><strong>10.0 GPH</strong></td>
+                <td><strong>14.5 NM/gal</strong></td>
+                <td class="action-cell">Deep lean / maximum range (~50–55% Power)</td>
+            </tr>
+            <tr>
+                <td><strong>High Alt Cruise</strong></td>
+                <td><strong>163 kt TAS</strong></td>
+                <td><strong>10.8 GPH</strong></td>
+                <td><strong>15.1 NM/gal</strong></td>
+                <td class="action-cell">Cruising > 10,500 ft MSL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="section-title">5. Cruise Mode Trade-Off Analysis (155@11 vs. 145@10)</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Route Distance</th>
+                <th>145 kt @ 10 GPH</th>
+                <th>155 kt @ 11 GPH</th>
+                <th>Time Saved</th>
+                <th>Extra Fuel Burned</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>300 NM</strong> (e.g. Boston)</td>
+                <td>2h 04m (20.7 gal)</td>
+                <td><strong>1h 56m</strong> (21.3 gal)</td>
+                <td>⏱️ <strong>8.0 min faster</strong></td>
+                <td>+0.6 gallons</td>
+            </tr>
+            <tr>
+                <td><strong>500 NM</strong> (e.g. Atlanta)</td>
+                <td>3h 27m (34.5 gal)</td>
+                <td><strong>3h 14m</strong> (35.5 gal)</td>
+                <td>⏱️ <strong>13.3 min faster</strong></td>
+                <td>+1.0 gallon</td>
+            </tr>
+            <tr>
+                <td><strong>600 NM</strong> (e.g. Chicago / Jax)</td>
+                <td>4h 08m (41.4 gal)</td>
+                <td><strong>3h 52m</strong> (42.6 gal)</td>
+                <td>⏱️ <strong>16.0 min faster</strong></td>
+                <td>+1.2 gallons</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="rule-box" style="margin-top: 10px;">
+        <strong>💡 Cross-Country Verdict:</strong> Flying <strong>155 kt @ 11 GPH</strong> saves <strong>13 to 16 minutes</strong> on cross-country flights while burning only <strong>1.0 extra gallon of fuel total</strong>!
+    </div>
+
+    <div class="section-title">6. Non-Stop Still-Air Range Envelope from Millville (KMIV)</div>
+    <div class="specs-grid">
+        <div class="spec-item"><strong>🧭 WEST:</strong> Chicago, IL (KMDW) — 596 NM | 3h 52m @ 155kt | 17.4 gal reserve remaining</div>
+        <div class="spec-item"><strong>🧭 SOUTH:</strong> Jacksonville, FL (KJAX) — 624 NM | 4h 02m @ 155kt | 15.6 gal reserve remaining</div>
+        <div class="spec-item"><strong>🧭 SOUTHWEST:</strong> Atlanta, GA (KPDK) — 553 NM | 3h 34m @ 155kt | 20.8 gal reserve remaining</div>
+        <div class="spec-item"><strong>🧭 NORTH:</strong> Montreal (CYUL) 371 NM / Toronto (CYYZ) 330 NM | ~2h 15m | ~33.0 gal reserve</div>
+    </div>
+
+    <div class="footer-note">
+        N205EN RV-10 Custom Performance Kneeboard Card • Page 2 of 2 • Rev. 2 (July 30, 2026)
+    </div>
+</div>
+
+</body>
+</html>
