@@ -1,6 +1,14 @@
 # Project Context & Rules for N205EN Flight Data
 
+## Conversation Start Protocol
+At the beginning of any new conversation thread in this workspace:
+1. Silently check Git status (`git status`).
+2. If remote changes exist on GitHub, prompt the user: *"Remote updates detected on GitHub for Flight_Data. Would you like me to pull them now?"*
+
+---
+
 When analyzing flight data in this workspace, strictly follow the guidelines defined in [AIRCRAFT_PROFILE.md](reference/AIRCRAFT_PROFILE.md):
+
 
 1. **Break-In Filtering**: Ignore data prior to **November 5, 2021** (engine break-in phase & pre-wheel-pants) when modeling current aircraft speed or fuel performance.
 2. **Wheel Pants Step Change**: Performance from **November 5, 2021 onward** reflects the +12 to +15 knot speed increase from installed wheel pants (155–163 kt TAS in cruise).
