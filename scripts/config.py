@@ -8,6 +8,9 @@ DATA_DIR = PROJECT_DIR / "data"
 RAW_CSV_DIR = DATA_DIR / "raw_csvs"
 PARQUET_DIR = DATA_DIR / "parquet"
 TEMP_DIR = PROJECT_DIR / "temp"
+NEW_FLIGHT_LOG_DIR = PROJECT_DIR / "New_Flight_Log"
+
+PARQUET_BACKUP_DIR = PARQUET_DIR / "backups"
 
 # Output Parquet Files
 METADATA_PARQUET = PARQUET_DIR / "flights_metadata.parquet"
@@ -18,10 +21,11 @@ GROUND_TELEMETRY_PARQUET = PARQUET_DIR / "n205en_ground_maintenance.parquet"
 SESSION_FILE = DATA_DIR / "savvy_session.json"
 
 # Create directories if they do not exist
-DATA_DIR.mkdir(exist_ok=True)
-RAW_CSV_DIR.mkdir(exist_ok=True)
-PARQUET_DIR.mkdir(exist_ok=True)
-TEMP_DIR.mkdir(exist_ok=True)
+for d in [DATA_DIR, RAW_CSV_DIR, PARQUET_DIR, TEMP_DIR, NEW_FLIGHT_LOG_DIR, PARQUET_BACKUP_DIR]:
+    try:
+        d.mkdir(exist_ok=True)
+    except Exception:
+        pass
 
 SAVVY_BASE_URL = "https://apps.savvyaviation.com"
 SAVVY_FLIGHTS_URL = f"{SAVVY_BASE_URL}/flights"

@@ -20,6 +20,7 @@ import os
 import time
 import re
 import json
+import shutil
 import importlib.util
 from pathlib import Path
 
@@ -29,15 +30,54 @@ spec = importlib.util.spec_from_file_location("config", config_path)
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
+PROJECT_DIR = config.PROJECT_DIR
 DATA_DIR = config.DATA_DIR
 RAW_CSV_DIR = config.RAW_CSV_DIR
+NEW_FLIGHT_LOG_DIR = config.NEW_FLIGHT_LOG_DIR
+PARQUET_BACKUP_DIR = config.PARQUET_BACKUP_DIR
 METADATA_PARQUET = config.METADATA_PARQUET
 FLIGHT_TELEMETRY_PARQUET = config.FLIGHT_TELEMETRY_PARQUET
 GROUND_TELEMETRY_PARQUET = config.GROUND_TELEMETRY_PARQUET
 SESSION_FILE = config.SESSION_FILE
 SAVVY_BASE_URL = config.SAVVY_BASE_URL
 
-AIRCRAFT_FLIGHTS_URL = f"{SAVVY_BASE_URL}/flights/aircraft/26886"
+def safe_write_parquet(df, target_path, label, max_backups=5):
+    tmp_path = target_path.with_suffix(".parquet.tmp")
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    archive_path = PARQUET_BACKUP_DIR / f"{target_path.stem}_{ts}.parquet"
+    
+    print(f"\nWriting {label}: {len(df):,} total rows...")
+    
+    # 1. Write to temporary file first
+    df.to_parquet(tmp_path, engine="pyarrow", compression="zstd")
+    
+    # 2. Verify temporary file written cleanly and non-empty
+    if tmp_path.exists() and tmp_path.stat().st_size > 0:
+        # 3. Create a timestamped archive copy of existing file before replacing
+        if target_path.exists():
+            try:
+                shutil.copy2(str(target_path), str(archive_path))
+                print(f"Created rolling backup: {archive_path.name}")
+            except Exception as err:
+                print(f"Warning: Failed to create archive backup: {err}")
+            
+        # 4. Move temporary file to target path (atomic swap)
+        shutil.move(str(tmp_path), str(target_path))
+
+        # 5. Maintain rolling retention window (keep up to max_backups, prune oldest)
+        try:
+            existing_archives = sorted(
+                list(PARQUET_BACKUP_DIR.glob(f"{target_path.stem}_*.parquet")),
+                key=lambda p: p.stat().st_mtime
+            )
+            if len(existing_archives) > max_backups:
+                for old_p in existing_archives[:-max_backups]:
+                    old_p.unlink()
+                    print(f"Pruned oldest rolling backup: {old_p.name}")
+        except Exception as err:
+            print(f"Warning: Backup pruning notice: {err}")
+    else:
+        raise RuntimeError(f"Failed to write {label} to {target_path}")
 
 def run_pipeline():
     print("=" * 80)
@@ -194,85 +234,125 @@ def run_pipeline():
     else:
         print("Skipping Playwright scraping. Proceeding to process local CSV telemetry files...")
 
-    print("\nPhase 4: Telemetry Harmonization & Parquet Generation...")
-    csv_files = list(RAW_CSV_DIR.glob("*.csv"))
-    print(f"Total raw CSV log files in repository: {len(csv_files)}")
-
-    if not csv_files:
-        print("No CSV files found in raw directory. Pipeline stopping.")
-        return
-
-    print("Loading and parsing raw CSV files into DataFrames...")
-    all_dfs = []
-    for csv_p in tqdm(csv_files, desc="Parsing CSVs"):
-        try:
-            pdf = pd.read_csv(csv_p, low_memory=False, on_bad_lines="skip")
-            pdf.columns = [col.strip().lower().replace(" ", "_").replace("(", "").replace(")", "") for col in pdf.columns]
-            pdf = pdf.loc[:, ~pdf.columns.duplicated()]
-            pdf["source_file"] = csv_p.name
-            all_dfs.append(pdf)
-        except Exception as err:
-            print(f"Warning: Failed to parse {csv_p.name}: {err}")
-
-    if not all_dfs:
-        print("Error: Could not load any telemetry DataFrames.")
-        return
-
-    print("Concatenating all telemetry DataFrames...")
-    full_df = pd.concat(all_dfs, ignore_index=True)
-    full_df = full_df.loc[:, ~full_df.columns.duplicated()]
+    print("\nPhase 4: Incremental Telemetry Ingestion & Parquet Generation...")
     
-    print(f"\nTotal raw telemetry points loaded: {len(full_df):,} rows, {len(full_df.columns)} columns.")
+    # 1. Scan drop directory and raw CSV directory
+    drop_csv_files = list(NEW_FLIGHT_LOG_DIR.glob("*.csv"))
+    raw_csv_files = list(RAW_CSV_DIR.glob("*.csv"))
+    
+    if drop_csv_files:
+        print(f"Found {len(drop_csv_files)} new flight log CSV file(s) in {NEW_FLIGHT_LOG_DIR.name}/ drop directory:")
+        for f in drop_csv_files:
+            print(f" - {f.name}")
+            
+    # Check existing ingested source files from Parquet databases (only if BOTH exist)
+    existing_ingested_sources = set()
+    if FLIGHT_TELEMETRY_PARQUET.exists() and GROUND_TELEMETRY_PARQUET.exists():
+        try:
+            flight_sources = set(pd.read_parquet(FLIGHT_TELEMETRY_PARQUET, columns=["source_file"])["source_file"].unique())
+            ground_sources = set(pd.read_parquet(GROUND_TELEMETRY_PARQUET, columns=["source_file"])["source_file"].unique())
+            existing_ingested_sources = flight_sources.intersection(ground_sources)
+        except Exception:
+            existing_ingested_sources = set()
 
-    print("Harmonizing and coercing column dtypes for PyArrow export...")
-    str_cols = ["source_file", "gps_date_&_time", "system_time", "destination_waypoint_id", "cdi_source_type", "cdi_source_port", "ap_roll_mode", "transponder_status", "egt_leaning_state"]
-    for col in tqdm(full_df.columns, desc="Coercing dtypes"):
-        if col not in str_cols:
-            num_col = pd.to_numeric(full_df[col], errors="coerce")
-            if num_col.notna().sum() > 0:
-                full_df[col] = num_col
-            else:
-                full_df[col] = full_df[col].astype(str)
-        else:
-            full_df[col] = full_df[col].astype(str)
+    print(f"Already ingested CSV source files in database: {len(existing_ingested_sources)}")
 
-    # Determine flight vs ground split
-    ias_col = "indicated_airspeed_knots" if "indicated_airspeed_knots" in full_df.columns else None
-    rpm_col = "rpm_l" if "rpm_l" in full_df.columns else ("rpm" if "rpm" in full_df.columns else None)
+    # Determine candidate files to parse
+    all_available_csvs = drop_csv_files + [f for f in raw_csv_files if f.name not in set(c.name for c in drop_csv_files)]
+    csv_files_to_parse = [f for f in all_available_csvs if f.name not in existing_ingested_sources]
 
-    if ias_col and rpm_col:
-        is_flight_condition = (full_df[ias_col] > 30) & (full_df[rpm_col] > 1000)
-    elif ias_col:
-        is_flight_condition = full_df[ias_col] > 30
+    if not csv_files_to_parse:
+        print("No new raw CSV log files to process. Database is up to date!")
+        # Relocate any drop files that were already in database
+        for f in drop_csv_files:
+            target_p = RAW_CSV_DIR / f.name
+            if f.resolve() != target_p.resolve():
+                shutil.move(str(f), str(target_p))
+                print(f"Moved {f.name} -> {RAW_CSV_DIR.relative_to(PROJECT_DIR)}/")
     else:
-        is_flight_condition = full_df.index > -1
+        print(f"Parsing {len(csv_files_to_parse)} new raw CSV file(s) into database...")
+        new_dfs = []
+        for csv_p in tqdm(csv_files_to_parse, desc="Parsing new CSVs"):
+            try:
+                pdf = pd.read_csv(csv_p, low_memory=False, on_bad_lines="skip")
+                pdf.columns = [col.strip().lower().replace(" ", "_").replace("(", "").replace(")", "") for col in pdf.columns]
+                pdf = pdf.loc[:, ~pdf.columns.duplicated()]
+                pdf["source_file"] = csv_p.name
+                new_dfs.append(pdf)
+            except Exception as err:
+                print(f"Warning: Failed to parse {csv_p.name}: {err}")
 
-    flight_telemetry = full_df[is_flight_condition].copy()
-    ground_telemetry = full_df[~is_flight_condition].copy()
+        if new_dfs:
+            new_full_df = pd.concat(new_dfs, ignore_index=True)
+            new_full_df = new_full_df.loc[:, ~new_full_df.columns.duplicated()]
 
-    print(f"\nWriting Flight Telemetry Parquet: {len(flight_telemetry):,} rows...")
-    if FLIGHT_TELEMETRY_PARQUET.exists():
-        try:
-            FLIGHT_TELEMETRY_PARQUET.unlink()
-        except Exception:
-            pass
-    flight_telemetry.to_parquet(FLIGHT_TELEMETRY_PARQUET, engine="pyarrow", compression="zstd")
+            # Harmonize column dtypes
+            str_cols = ["source_file", "gps_date_&_time", "system_time", "destination_waypoint_id", "cdi_source_type", "cdi_source_port", "ap_roll_mode", "transponder_status", "egt_leaning_state"]
+            for col in tqdm(new_full_df.columns, desc="Coercing dtypes"):
+                if col not in str_cols:
+                    new_full_df[col] = pd.to_numeric(new_full_df[col], errors="coerce")
+                else:
+                    new_full_df[col] = new_full_df[col].astype(str)
 
-    print(f"Writing Ground/Maintenance Parquet: {len(ground_telemetry):,} rows...")
-    if GROUND_TELEMETRY_PARQUET.exists():
-        try:
-            GROUND_TELEMETRY_PARQUET.unlink()
-        except Exception:
-            pass
-    ground_telemetry.to_parquet(GROUND_TELEMETRY_PARQUET, engine="pyarrow", compression="zstd")
+            # Determine flight vs ground split
+            ias_col = "indicated_airspeed_knots" if "indicated_airspeed_knots" in new_full_df.columns else None
+            rpm_col = "rpm_l" if "rpm_l" in new_full_df.columns else ("rpm" if "rpm" in new_full_df.columns else None)
+
+            if ias_col and rpm_col:
+                is_flight_condition = (new_full_df[ias_col] > 30) & (new_full_df[rpm_col] > 1000)
+            elif ias_col:
+                is_flight_condition = new_full_df[ias_col] > 30
+            else:
+                is_flight_condition = new_full_df.index > -1
+
+            new_flight_telemetry = new_full_df[is_flight_condition].copy()
+            new_ground_telemetry = new_full_df[~is_flight_condition].copy()
+
+            # Merge with existing Parquet files if available
+            if FLIGHT_TELEMETRY_PARQUET.exists() and len(existing_ingested_sources) > 0:
+                print("Merging new flight telemetry with existing dataset...")
+                existing_flight = pd.read_parquet(FLIGHT_TELEMETRY_PARQUET)
+                for c in existing_flight.columns:
+                    if c in new_flight_telemetry.columns and existing_flight[c].dtype != new_flight_telemetry[c].dtype:
+                        try:
+                            new_flight_telemetry[c] = new_flight_telemetry[c].astype(existing_flight[c].dtype)
+                        except Exception:
+                            pass
+                flight_telemetry = pd.concat([existing_flight, new_flight_telemetry], ignore_index=True)
+            else:
+                flight_telemetry = new_flight_telemetry
+
+            if GROUND_TELEMETRY_PARQUET.exists() and len(existing_ingested_sources) > 0:
+                print("Merging new ground telemetry with existing dataset...")
+                existing_ground = pd.read_parquet(GROUND_TELEMETRY_PARQUET)
+                for c in existing_ground.columns:
+                    if c in new_ground_telemetry.columns and existing_ground[c].dtype != new_ground_telemetry[c].dtype:
+                        try:
+                            new_ground_telemetry[c] = new_ground_telemetry[c].astype(existing_ground[c].dtype)
+                        except Exception:
+                            pass
+                ground_telemetry = pd.concat([existing_ground, new_ground_telemetry], ignore_index=True)
+            else:
+                ground_telemetry = new_ground_telemetry
+
+            safe_write_parquet(flight_telemetry, FLIGHT_TELEMETRY_PARQUET, "Flight Telemetry Parquet")
+            safe_write_parquet(ground_telemetry, GROUND_TELEMETRY_PARQUET, "Ground/Maintenance Parquet")
+
+            # Move processed CSV files from New_Flight_Log drop folder to data/raw_csvs
+            for f in drop_csv_files:
+                target_p = RAW_CSV_DIR / f.name
+                shutil.move(str(f), str(target_p))
+                print(f"Moved processed CSV: {f.name} -> {RAW_CSV_DIR.relative_to(PROJECT_DIR)}/")
 
     catalog_count_str = f"{len(flights_catalog)} flights" if 'flights_catalog' in locals() and flights_catalog else ("Catalog existing" if METADATA_PARQUET.exists() else "N/A")
+    flight_stat_str = f"{FLIGHT_TELEMETRY_PARQUET.stat().st_size / (1024*1024):.2f} MB" if FLIGHT_TELEMETRY_PARQUET.exists() else "Missing"
+    ground_stat_str = f"{GROUND_TELEMETRY_PARQUET.stat().st_size / (1024*1024):.2f} MB" if GROUND_TELEMETRY_PARQUET.exists() else "Missing"
 
     print("\n" + "=" * 80)
     print("SUCCESS! Pipeline Execution Complete.")
     print(f"1. Master Catalog: {METADATA_PARQUET.name} ({METADATA_PARQUET.stat().st_size / 1024:.1f} KB, {catalog_count_str})")
-    print(f"2. Flight Telemetry: {FLIGHT_TELEMETRY_PARQUET.name} ({FLIGHT_TELEMETRY_PARQUET.stat().st_size / (1024*1024):.2f} MB)")
-    print(f"3. Ground Telemetry: {GROUND_TELEMETRY_PARQUET.name} ({GROUND_TELEMETRY_PARQUET.stat().st_size / (1024*1024):.2f} MB)")
+    print(f"2. Flight Telemetry: {FLIGHT_TELEMETRY_PARQUET.name} ({flight_stat_str})")
+    print(f"3. Ground Telemetry: {GROUND_TELEMETRY_PARQUET.name} ({ground_stat_str})")
     print("=" * 80)
 
 if __name__ == "__main__":
