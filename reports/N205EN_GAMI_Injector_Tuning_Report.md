@@ -8,16 +8,20 @@
 
 ## 🎯 Executive Summary
 
-Analysis of **143 historical cross-country flights** confirms that N205EN's current engine roughness at 50°F Lean-Of-Peak (LOP) is caused by a **systemic GAMI spread of ~1.7 to 2.0 GPH**. 
+Analysis of **143 historical cross-country flights** confirmed that N205EN's engine roughness at 50°F Lean-Of-Peak (LOP) was caused by a **systemic GAMI spread of ~1.7 to 2.0 GPH**.
 
-* **The Cause**: **Cylinders 4 & 6** systematically peak **first** (at high fuel flows ~11.5–11.8 GPH), while **Cylinders 1 & 5** systematically peak **last** (at low fuel flows ~9.7–10.2 GPH).
-* **The Solution**: Installing a targeted set of Air Flow Performance (AFP) restrictors will re-balance fuel distribution across the cylinders, collapsing the GAMI spread down to **< 0.3 GPH** and enabling glass-smooth LOP operation.
+> [!IMPORTANT]
+> **CURRENT ACTIVE AIRCRAFT STATUS (As of August 9, 2026)**
+> * **Currently Installed Restrictors**: **Cyl 1**: `.0290` | **Cyl 2**: `.0280` | **Cyl 3**: `.0275` | **Cyl 4**: `.0265` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+> * **Current GAMI Spread**: **~0.80 GPH** *(Down from ~2.0 GPH baseline; Cylinders 2 & 4 are the remaining rich outliers)*.
+> * **Active Next Step (Round 2 Optimization)**: Install `.0260` on Cyl 4 and `.0270` on Cyl 2 from spare inventory.
+> * **Available Spare Inventory in Hangar**: **`.026`** *(allocated to Cyl 4)*, **`.027`** *(allocated to Cyl 2)*, **`.0285`**, **`.0285`**, **`.029`**.
 
 ---
 
-## 📊 Current Injector Baseline & Peak Sequence
+## 📊 Original Aircraft Baseline (Pre-Tuning)
 
-### Current Installed Nozzle Sizes
+### Original Installed Nozzle Sizes (Baseline)
 * **Cylinder 1**: `.0285`
 * **Cylinder 2**: `.0290`
 * **Cylinder 3**: `.0275`
