@@ -162,3 +162,55 @@ Savvy Aviation GAMI Mixture Sweep flight test protocol for N205EN across **3 VFR
 After installing this initial change set:
 * **Target GAMI Spread**: **< 0.3 GPH** (down from ~2.0 GPH).
 * **Expected LOP Operation**: Smooth, vibration-free engine operation at **50°F LOP (~9.5 GPH cruise)**.
+
+---
+
+## 📅 Round 1 Test Flight Results & Tuning Iteration (August 9, 2026)
+
+### 🛠️ Actual Installed Configuration (Round 1)
+On August 9, 2026, the Round 1 restrictor modifications were installed with minor variations from the initial plan:
+* **Cylinder 1**: Installed **`.0290`** *(relocated from Cyl 2)*
+* **Cylinder 2**: Installed **`.0280`** *(relocated unmarked nozzle from Cyl 5, presumed `.0280`)*
+* **Cylinder 3**: Retained **`.0275`** *(baseline)*
+* **Cylinder 4**: Retained **`.0265`** *(baseline)*
+* **Cylinder 5**: Installed **`.0290`** *(new restrictor)*
+* **Cylinder 6**: Retained **`.0270`** *(installed restrictor)*
+
+---
+
+### ✈️ Flight Test Execution & Empirical Results
+GAMI mixture sweep flight tests were conducted across **4 pressure altitudes** (10.5k, 11.5k, 12.5k, and 9.5k ft MSL) at WOT / 2350 RPM. Telemetry was logged by the Dynon SkyView EFIS and ingested into the Parquet database (`n205en_engine_telemetry.parquet`).
+
+#### Empirical Peak Fuel Flows & Cylinder Order:
+Across the 4 altitude runs, individual cylinder peak fuel flows shifted significantly compared to historical baseline:
+
+| Cylinder | Round 1 Restrictor | Baseline Peak FF | Round 1 Peak FF | Shift / Behavior |
+| :--- | :--- | :--- | :--- | :--- |
+| **Cylinder 4** | `.0265` | 11.50 GPH | **10.70 – 11.10 GPH** | 🔴 **Rich Outlier** (Now 1st/2nd to peak) |
+| **Cylinder 2** | `.0280` | 10.90 GPH | **10.60 – 11.30 GPH** | 🔴 **Rich Outlier** (Now 1st/2nd to peak) |
+| **Cylinder 5** | `.0290` | 10.20 GPH | **10.40 – 10.60 GPH** | 🟢 Enriched off lean bottom (+0.3 GPH) |
+| **Cylinder 3** | `.0275` | 10.60 GPH | **10.30 – 10.50 GPH** | 🟢 Mid-pack anchor |
+| **Cylinder 1** | `.0290` | 10.00 GPH | **10.10 – 10.40 GPH** | 🟢 Enriched off lean bottom (+0.3 GPH) |
+| **Cylinder 6** | `.0270` | 11.80 GPH | **9.60 – 10.40 GPH** | 🟢 Restricted from extreme rich (-1.5 GPH) |
+
+#### Key Findings:
+1. **Successful Compression of Outer Extremes**: Enriching Cylinders 1 & 5 to `.0290` and restricting Cylinder 6 to `.0270` successfully collapsed the old 2.0 GPH outer boundary.
+2. **New Rich Outliers Identified**: Cylinders 2 (`.0280`) and 4 (`.0265`) are now left hanging out on the rich end (~10.7 – 11.3 GPH), leaving an overall residual GAMI spread of **~0.70 to 1.10 GPH** above the main 4-cylinder pack (~10.1 – 10.5 GPH).
+
+---
+
+### 🚀 Path Forward: Round 2 Restrictor Optimization Plan
+
+To collapse Cylinders 2 and 4 into the ~10.30 GPH target cluster, execute Round 2 changes leveraging existing spare restrictor inventory (`.026`, `.027`, `.0285`, `.0285`, `.029`):
+
+#### Proposed Round 2 Adjustments:
+1. **Cylinder 4**: Restrict from `.0265` down to **`.0260`** *(using NEW `.026` from inventory)*.  
+   * *Impact*: Shifts Cyl 4 peak down by ~0.50 GPH to **~10.30 GPH** (exact theoretical ideal).
+2. **Cylinder 2**: Restrict from `.0280` down to **`.0270`** *(using NEW `.027` from inventory)*.  
+   * *Impact*: Shifts Cyl 2 peak down by ~0.85 GPH to **~9.95 – 10.00 GPH** (or ideal `.0275` if ordered for ~10.35 GPH).
+
+#### Final Target Configuration (Round 2):
+* **Cyl 1**: `.0290` | **Cyl 2**: **`.0270`** *(or `.0275`)* | **Cyl 3**: `.0275` | **Cyl 4**: **`.0260`** | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+
+#### Target Outcome:
+Collapse all 6 cylinders into the **10.0 – 10.4 GPH peak cluster**, yielding a final GAMI Spread **< 0.3 GPH**.
