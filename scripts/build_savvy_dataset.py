@@ -42,42 +42,35 @@ SESSION_FILE = config.SESSION_FILE
 SAVVY_BASE_URL = config.SAVVY_BASE_URL
 
 def safe_write_parquet(df, target_path, label, max_backups=5):
-    tmp_path = target_path.with_suffix(".parquet.tmp")
     ts = time.strftime("%Y%m%d_%H%M%S")
     archive_path = PARQUET_BACKUP_DIR / f"{target_path.stem}_{ts}.parquet"
     
     print(f"\nWriting {label}: {len(df):,} total rows...")
     
-    # 1. Write to temporary file first
-    df.to_parquet(tmp_path, engine="pyarrow", compression="zstd")
-    
-    # 2. Verify temporary file written cleanly and non-empty
-    if tmp_path.exists() and tmp_path.stat().st_size > 0:
-        # 3. Create a timestamped archive copy of existing file before replacing
-        if target_path.exists():
-            try:
-                shutil.copy2(str(target_path), str(archive_path))
-                print(f"Created rolling backup: {archive_path.name}")
-            except Exception as err:
-                print(f"Warning: Failed to create archive backup: {err}")
-            
-        # 4. Move temporary file to target path (atomic swap)
-        shutil.move(str(tmp_path), str(target_path))
-
-        # 5. Maintain rolling retention window (keep up to max_backups, prune oldest)
+    # 1. Create a timestamped archive copy of existing file before updating
+    if target_path.exists():
         try:
-            existing_archives = sorted(
-                list(PARQUET_BACKUP_DIR.glob(f"{target_path.stem}_*.parquet")),
-                key=lambda p: p.stat().st_mtime
-            )
-            if len(existing_archives) > max_backups:
-                for old_p in existing_archives[:-max_backups]:
-                    old_p.unlink()
-                    print(f"Pruned oldest rolling backup: {old_p.name}")
+            shutil.copy2(str(target_path), str(archive_path))
+            print(f"Created rolling backup: {archive_path.name}")
         except Exception as err:
-            print(f"Warning: Backup pruning notice: {err}")
-    else:
-        raise RuntimeError(f"Failed to write {label} to {target_path}")
+            print(f"Warning: Failed to create archive backup: {err}")
+        
+    # 2. Write directly to target parquet file
+    df.to_parquet(target_path, engine="pyarrow", compression="zstd")
+    print(f"Successfully saved {label} ({target_path.stat().st_size / (1024*1024):.2f} MB).")
+
+    # 3. Maintain rolling retention window (keep up to max_backups, prune oldest)
+    try:
+        existing_archives = sorted(
+            list(PARQUET_BACKUP_DIR.glob(f"{target_path.stem}_*.parquet")),
+            key=lambda p: p.stat().st_mtime
+        )
+        if len(existing_archives) > max_backups:
+            for old_p in existing_archives[:-max_backups]:
+                old_p.unlink()
+                print(f"Pruned oldest rolling backup: {old_p.name}")
+    except Exception as err:
+        print(f"Warning: Backup pruning notice: {err}")
 
 def run_pipeline():
     print("=" * 80)

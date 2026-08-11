@@ -17,14 +17,24 @@ This document defines the core specification, operational history, and performan
   - **Fuel Grade**: **100LL Aviation Gasoline**
 
 ### 🔧 Custom Tuned GAMI Fuel Injector Nozzles
-Custom-tuned GAMIjectors installed during initial flight testing to balance cylinder-to-cylinder fuel flow and tighten GAMI spread:
 
-| Cylinder | GAMI Nozzle Orifice Size | Relative Sizing Context |
+#### Current Active Aircraft Configuration (Round 2 - As of August 10, 2026)
+| Cylinder | Installed Restrictor | Orifice Size | Net Adjustment from Baseline |
+| :--- | :--- | :--- | :--- |
+| **Cylinder 1** | `.0290` | **0.0290"** | +`.0005` (Enriched) |
+| **Cylinder 2** | `.0270` | **0.0270"** | -`.0020` (Restricted on Aug 10) |
+| **Cylinder 3** | `.0275` | **0.0275"** | Baseline anchor |
+| **Cylinder 4** | `.0260` | **0.0260"** | -`.0005` (Restricted on Aug 10) |
+| **Cylinder 5** | `.0290` | **0.0290"** | +`.0010` (Enriched) |
+| **Cylinder 6** | `.0270` | **0.0270"** | -`.0005` (Restricted) |
+
+#### Original Factory / Baseline Nozzle Configuration (Pre-Tuning)
+| Cylinder | Baseline Nozzle Orifice Size | Relative Sizing Context |
 | :--- | :--- | :--- |
 | **Cylinder 1** | **0.0285"** *(Stamp 28.5)* | Standard mid-size |
-| **Cylinder 2** | **0.0290"** *(Stamp 29.0)* | Largest nozzle (enrichment for Cyl 2) |
+| **Cylinder 2** | **0.0290"** *(Stamp 29.0)* | Baseline largest nozzle |
 | **Cylinder 3** | **0.0275"** *(Stamp 27.5)* | Mid-lean nozzle |
-| **Cylinder 4** | **0.0265"** *(Stamp 26.5)* | Smallest nozzle (balances hot Cyl 4) |
+| **Cylinder 4** | **0.0265"** *(Stamp 26.5)* | Smallest baseline nozzle |
 | **Cylinder 5** | **0.0280"** *(Stamp 28.0)* | Standard mid-size |
 | **Cylinder 6** | **0.0275"** *(Stamp 27.5)* | Mid-lean nozzle |
 

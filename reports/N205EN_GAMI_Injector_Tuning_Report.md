@@ -1,4 +1,27 @@
-# Engineering Report: N205EN Fuel Injector Tuning & GAMI Spread Optimization
+# 📜 N205EN Fuel Injector Tuning Master Ledger & Historical Reports
+
+> [!NOTE]
+> **DOCUMENT ARCHITECTURE & LEDGER INTENT**  
+> This file is the authoritative, append-only historical ledger of all fuel injector tuning reports, baseline data, physical restrictor modifications, and flight test analyses for Van's RV-10 **N205EN**.  
+> **Rule for AI Agents & Engineers**: Do NOT overwrite or modify existing historical report sections. Append new tuning reports chronologically at the bottom of this file. Always maintain clear report boundaries using the standard delimiter format.
+
+---
+
+> [!IMPORTANT]
+> **CURRENT ACTIVE AIRCRAFT STATUS (As of August 10, 2026)**
+> * **Currently Installed Restrictors (Round 2 Layout)**: **Cyl 1**: `.0290` | **Cyl 2**: `.0270` | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+> * **August 10 Empirical Flight Results**: **5 of 6 Cylinders** (Cyl 1, 3, 4, 5, 6) tightly compressed within **0.30 GPH** (10.40 – 10.80 GPH). Cylinder 4 successfully brought into alignment by `.0260` restrictor!
+> * **Sole Remaining Outlier**: **Cylinder 2** peaking early at **11.20 – 11.30 GPH** (~0.50 GPH richer than 5-cylinder pack).
+> * **Active Next Step (Round 3 Optimization)**: Install smallest available hangar restrictor (**`.0265`**, removed from Cyl 4) on Cylinder 2. Flight test to evaluate if `.0265` achieves < 0.30 GPH target or if a new `.0260` order from Air Flow Performance is needed.
+> * **Available Spare Inventory in Hangar**: **`.0265`** *(allocated to Cyl 2)*, **`.0280`** *(removed from Cyl 2)*, **`.0285`**, **`.0285`**, **`.029`**.
+
+---
+
+################################################################################
+# 📄 TUNING REPORT 1: BASELINE ENGINE ANALYSIS & INITIAL AFP RESTRICTOR PLAN
+# Report Date: Pre-Tuning Baseline Analysis
+# Status: Historical Baseline / Archived Initial Plan
+################################################################################
 
 **Aircraft**: Van's RV-10 (**N205EN**)  
 **Engine**: Lycoming IO-540 with Air Flow Performance (AFP) Fuel Injection System  
@@ -9,13 +32,6 @@
 ## 🎯 Executive Summary
 
 Analysis of **143 historical cross-country flights** confirmed that N205EN's engine roughness at 50°F Lean-Of-Peak (LOP) was caused by a **systemic GAMI spread of ~1.7 to 2.0 GPH**.
-
-> [!IMPORTANT]
-> **CURRENT ACTIVE AIRCRAFT STATUS (As of August 9, 2026)**
-> * **Currently Installed Restrictors**: **Cyl 1**: `.0290` | **Cyl 2**: `.0280` | **Cyl 3**: `.0275` | **Cyl 4**: `.0265` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
-> * **Current GAMI Spread**: **~0.80 GPH** *(Down from ~2.0 GPH baseline; Cylinders 2 & 4 are the remaining rich outliers)*.
-> * **Active Next Step (Round 2 Optimization)**: Install `.0260` on Cyl 4 and `.0270` on Cyl 2 from spare inventory.
-> * **Available Spare Inventory in Hangar**: **`.026`** *(allocated to Cyl 4)*, **`.027`** *(allocated to Cyl 2)*, **`.0285`**, **`.0285`**, **`.029`**.
 
 ---
 
@@ -167,9 +183,17 @@ After installing this initial change set:
 * **Target GAMI Spread**: **< 0.3 GPH** (down from ~2.0 GPH).
 * **Expected LOP Operation**: Smooth, vibration-free engine operation at **50°F LOP (~9.5 GPH cruise)**.
 
----
+################################################################################
+# END OF TUNING REPORT 1 (Baseline Analysis & Initial Plan)
+################################################################################
 
-## 📅 Round 1 Test Flight Results & Tuning Iteration (August 9, 2026)
+<br/>
+
+################################################################################
+# 📄 TUNING REPORT 2: ROUND 1 TEST FLIGHT RESULTS & ITERATION PLAN
+# Report Date: August 9, 2026
+# Status: Completed & Evaluated
+################################################################################
 
 ### 🛠️ Actual Installed Configuration (Round 1)
 On August 9, 2026, the Round 1 restrictor modifications were installed with minor variations from the initial plan:
@@ -203,7 +227,7 @@ Across the 4 altitude runs, individual cylinder peak fuel flows shifted signific
 
 ---
 
-### 🚀 Path Forward: Round 2 Restrictor Optimization Plan
+### 🚀 Path Forward: Round 2 Restrictor Optimization Plan (Aug 9 Plan)
 
 To collapse Cylinders 2 and 4 into the ~10.30 GPH target cluster, execute Round 2 changes leveraging existing spare restrictor inventory (`.026`, `.027`, `.0285`, `.0285`, `.029`):
 
@@ -213,8 +237,68 @@ To collapse Cylinders 2 and 4 into the ~10.30 GPH target cluster, execute Round 
 2. **Cylinder 2**: Restrict from `.0280` down to **`.0270`** *(using NEW `.027` from inventory)*.  
    * *Impact*: Shifts Cyl 2 peak down by ~0.85 GPH to **~9.95 – 10.00 GPH** (or ideal `.0275` if ordered for ~10.35 GPH).
 
-#### Final Target Configuration (Round 2):
-* **Cyl 1**: `.0290` | **Cyl 2**: **`.0270`** *(or `.0275`)* | **Cyl 3**: `.0275` | **Cyl 4**: **`.0260`** | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+#### Final Target Configuration (Round 2 Target):
+* **Cyl 1**: `.0290` | **Cyl 2**: **`.0270`** | **Cyl 3**: `.0275` | **Cyl 4**: **`.0260`** | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
 
 #### Target Outcome:
 Collapse all 6 cylinders into the **10.0 – 10.4 GPH peak cluster**, yielding a final GAMI Spread **< 0.3 GPH**.
+
+################################################################################
+# END OF TUNING REPORT 2 (August 9, 2026)
+################################################################################
+
+<br/>
+
+################################################################################
+# 📄 TUNING REPORT 3: ROUND 2 RESTRICTOR INSTALLATION & FLIGHT TEST EXECUTION
+# Report Date: August 10, 2026
+# Status: Active Aircraft Configuration Under Evaluation
+################################################################################
+
+### 🛠️ Executed Round 2 Restrictor Adjustments
+On August 10, 2026, Round 2 restrictor adjustments were physically installed to target the remaining rich outliers (Cylinders 2 & 4):
+
+#### Executed Round 2 Modifications:
+1. **Cylinder 4**: Restricted from `.0265` down to **`.0260`** *(installed spare `.026` restrictor)*.
+   * *Target Impact*: Shifts Cyl 4 peak down by ~0.50 GPH into the ~10.30 GPH main cylinder pack.
+2. **Cylinder 2**: Restricted from `.0280` down to **`.0270`** *(installed spare `.027` restrictor)*.
+   * *Target Impact*: Shifts Cyl 2 peak down by ~0.85 GPH into the ~10.00 – 10.30 GPH target cluster.
+
+#### Round 2 Installed Nozzle Layout (As of Aug 10, 2026):
+* **Cyl 1**: `.0290` | **Cyl 2**: **`.0270`** | **Cyl 3**: `.0275` | **Cyl 4**: **`.0260`** | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+
+---
+
+### ✈️ Empirical Flight Test Results (August 10, 2026)
+GAMI mixture sweep protocols were conducted at **9,500 ft MSL** and **10,500 ft MSL** (WOT / 2350 RPM). High-frequency engine telemetry (4 Hz) was extracted and analyzed across active mixture sweep windows:
+
+#### Empirical Peak Fuel Flows & Cylinder Peaking Order:
+
+| Cylinder | Installed Restrictor | Baseline Peak FF | Round 1 Peak FF | Round 2 Peak FF (Aug 10) | Tuning Behavior & Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Cylinder 2** | `.0270` | 10.90 GPH | 10.60 – 11.30 GPH | **11.20 – 11.30 GPH** | 🔴 **Sole Remaining Rich Outlier** (Peaks ~0.50 GPH early) |
+| **Cylinder 4** | `.0260` | 11.50 GPH | 10.70 – 11.10 GPH | **10.70 – 10.80 GPH** | 🟢 **MAJOR IMPROVEMENT** (Successfully compressed into main pack!) |
+| **Cylinder 1** | `.0290` | 10.00 GPH | 10.10 – 10.40 GPH | **10.50 – 10.70 GPH** | 🟢 Core 5-Cylinder Pack Anchor |
+| **Cylinder 6** | `.0270` | 11.80 GPH | 9.60 – 10.40 GPH | **10.60 – 10.70 GPH** | 🟢 Core 5-Cylinder Pack Anchor |
+| **Cylinder 3** | `.0275` | 10.60 GPH | 10.30 – 10.50 GPH | **10.50 – 10.70 GPH** | 🟢 Core 5-Cylinder Pack Anchor |
+| **Cylinder 5** | `.0290` | 10.20 GPH | 10.40 – 10.60 GPH | **10.40 – 10.70 GPH** | 🟢 Core 5-Cylinder Pack Anchor |
+
+#### Key Empirical Findings:
+1. **Major Success on Cylinder 4**: Installing the `.0260` restrictor on Cylinder 4 successfully pulled its peak down from 11.50 GPH (baseline) / 11.10 GPH (Round 1) to **10.70 – 10.80 GPH**, bringing it into tight alignment with the core engine pack.
+2. **5-Cylinder Pack Compressed**: **Cylinders 1, 3, 4, 5, and 6** now form a remarkably tight 5-cylinder cluster between **10.40 GPH and 10.80 GPH** (a **0.30 GPH sub-spread** across 5 cylinders!).
+3. **Sole Outlier Identified**: **Cylinder 2** (`.0270`) is now the single remaining rich outlier peaking early at **11.20 – 11.30 GPH**, creating the residual **0.70 – 0.80 GPH GAMI spread**.
+
+---
+
+### 🚀 Path Forward: Round 3 Restrictor Optimization Plan
+To eliminate the remaining ~0.50 GPH offset on Cylinder 2 and test if a new restrictor purchase is necessary:
+
+1. **Target Action (Cylinder 2)**: Install the smallest available restrictor in hangar inventory — **`.0265`** *(removed from Cylinder 4)* — onto Cylinder 2, replacing the `.0270` restrictor.
+2. **Round 3 Test Layout**: **Cyl 1**: `.0290` | **Cyl 2**: **`.0265`** | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`.
+3. **Flight Test Evaluation Criteria**:
+   - **Scenario A (Success)**: If `.0265` pulls Cylinder 2 peak down to **~10.60 – 10.80 GPH** (< 0.30 GPH overall GAMI spread achieved), tuning is **COMPLETE**.
+   - **Scenario B (New Order Required)**: If Cylinder 2 remains slightly rich at **~10.90 – 11.00 GPH**, order a **NEW `.0260`** restrictor from Air Flow Performance.
+
+################################################################################
+# END OF TUNING REPORT 3 (August 10, 2026)
+################################################################################
