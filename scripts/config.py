@@ -23,7 +23,7 @@ SESSION_FILE = DATA_DIR / "savvy_session.json"
 # Create directories if they do not exist
 for d in [DATA_DIR, RAW_CSV_DIR, PARQUET_DIR, TEMP_DIR, NEW_FLIGHT_LOG_DIR, PARQUET_BACKUP_DIR]:
     try:
-        d.mkdir(exist_ok=True)
+        d.mkdir(parents=True, exist_ok=True)
     except Exception:
         pass
 

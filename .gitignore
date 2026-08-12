@@ -15,6 +15,7 @@ data/savvy_session.json
 # Ignore single telemetry binary files over 100MB (GitHub single-file limit)
 data/parquet/n205en_engine_telemetry.parquet
 data/parquet/test_combined.parquet
+data/parquet/backups/
 data/debug/*.parquet
 
 

@@ -43,6 +43,7 @@ SAVVY_BASE_URL = config.SAVVY_BASE_URL
 
 def safe_write_parquet(df, target_path, label, max_backups=5):
     ts = time.strftime("%Y%m%d_%H%M%S")
+    PARQUET_BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     archive_path = PARQUET_BACKUP_DIR / f"{target_path.stem}_{ts}.parquet"
     
     print(f"\nWriting {label}: {len(df):,} total rows...")
