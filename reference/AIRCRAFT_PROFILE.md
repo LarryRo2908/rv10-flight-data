@@ -18,11 +18,11 @@ This document defines the core specification, operational history, and performan
 
 ### 🔧 Custom Tuned GAMI Fuel Injector Nozzles
 
-#### Current Active Aircraft Configuration (Round 2 - As of August 10, 2026)
+#### Target Aircraft Configuration (Round 4 Target - As of November 17, 2026)
 | Cylinder | Installed Restrictor | Orifice Size | Net Adjustment from Baseline |
 | :--- | :--- | :--- | :--- |
 | **Cylinder 1** | `.0290` | **0.0290"** | +`.0005` (Enriched) |
-| **Cylinder 2** | `.0270` | **0.0270"** | -`.0020` (Restricted on Aug 10) |
+| **Cylinder 2** | `.0280` | **0.0280"** | -`.0010` (Enriched vs .0265 test) |
 | **Cylinder 3** | `.0275` | **0.0275"** | Baseline anchor |
 | **Cylinder 4** | `.0260` | **0.0260"** | -`.0005` (Restricted on Aug 10) |
 | **Cylinder 5** | `.0290` | **0.0290"** | +`.0010` (Enriched) |

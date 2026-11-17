@@ -8,12 +8,11 @@
 ---
 
 > [!IMPORTANT]
-> **CURRENT ACTIVE AIRCRAFT STATUS (As of August 10, 2026)**
-> * **Currently Installed Restrictors (Round 2 Layout)**: **Cyl 1**: `.0290` | **Cyl 2**: `.0270` | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
-> * **August 10 Empirical Flight Results**: **5 of 6 Cylinders** (Cyl 1, 3, 4, 5, 6) tightly compressed within **0.30 GPH** (10.40 – 10.80 GPH). Cylinder 4 successfully brought into alignment by `.0260` restrictor!
-> * **Sole Remaining Outlier**: **Cylinder 2** peaking early at **11.20 – 11.30 GPH** (~0.50 GPH richer than 5-cylinder pack).
-> * **Active Next Step (Round 3 Optimization)**: Install smallest available hangar restrictor (**`.0265`**, removed from Cyl 4) on Cylinder 2. Flight test to evaluate if `.0265` achieves < 0.30 GPH target or if a new `.0260` order from Air Flow Performance is needed.
-> * **Available Spare Inventory in Hangar**: **`.0265`** *(allocated to Cyl 2)*, **`.0280`** *(removed from Cyl 2)*, **`.0285`**, **`.0285`**, **`.029`**.
+> **CURRENT ACTIVE AIRCRAFT STATUS (As of November 17, 2026)**
+> * **Active Target Layout (Round 4 Optimization)**: **Cyl 1**: `.0290` | **Cyl 2**: `.0280` | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+> * **November 16 Flight Results (.0265 Test in Cyl 2)**: Core 5 cylinders (1, 3, 4, 5, 6) demonstrated outstanding alignment within **0.20–0.30 GPH** (11.30–11.50 GPH). Cylinder 2 with `.0265` peaked at **12.60–12.70 GPH** (+1.30 GPH lean outlier), confirming that smaller nozzles starve the cylinder and cause premature peaking and elevated climb CHTs.
+> * **Active Next Step (Round 4)**: Install available hangar restrictor (**`.0280`**, removed from Cyl 2 in Round 2) into Cylinder 2 to enrich fuel flow, lower climb CHTs, and bring peak down to match the 11.30–11.50 GPH core pack.
+> * **Available Spare Inventory in Hangar**: **`.0265`** *(removed from Cyl 2)*, **`.0270`** *(removed from Cyl 2)*, **`.0285`**, **`.0285`**, **`.0300`**.
 
 ---
 
@@ -301,4 +300,78 @@ To eliminate the remaining ~0.50 GPH offset on Cylinder 2 and test if a new rest
 
 ################################################################################
 # END OF TUNING REPORT 3 (August 10, 2026)
+################################################################################
+
+################################################################################
+# 📄 TUNING REPORT 4: ROUND 3 FLIGHT TEST EVALUATION & ROUND 4 OPTIMIZATION PLAN
+# Report Date: November 16, 2026
+# Status: Active Aircraft Configuration Under Evaluation
+################################################################################
+
+### 🛠️ Round 3 Configuration Evaluated
+On November 16, 2026, flight testing was performed following the installation of the **`.0265`** restrictor on Cylinder 2 (relocated from Cylinder 4), keeping all other cylinders unchanged:
+* **Installed Nozzle Layout**: **Cyl 1**: `.0290` | **Cyl 2**: **`.0265`** | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+
+---
+
+### ✈️ Empirical Flight Test Results (November 16, 2026)
+GAMI mixture sweeps were conducted at **10,500 ft MSL** (WOT / ~2350 RPM). High-frequency telemetry (4 Hz) from the Dynon SkyView / Savvy engine log was extracted and analyzed across the active leaning sweeps:
+
+#### Empirical Peak Fuel Flows & Cylinder Peaking Order:
+
+| Cylinder | Installed Restrictor | Round 2 Peak FF (Aug 10) | Round 3 Peak FF (Nov 16) | Tuning Behavior & Diagnostic Findings |
+| :--- | :--- | :--- | :--- | :--- |
+| **Cylinder 2** | `.0265` | 11.20 – 11.30 GPH | **12.60 – 12.70 GPH** | 🔴 **Extreme Lean Outlier** (Peaks +1.30 GPH early; severe fuel starvation) |
+| **Cylinder 1** | `.0290` | 10.50 – 10.70 GPH | **11.40 – 11.50 GPH** | 🟢 **Core 5-Cylinder Pack Anchor** |
+| **Cylinder 4** | `.0260` | 10.70 – 10.80 GPH | **11.35 – 11.45 GPH** | 🟢 **Core 5-Cylinder Pack Anchor** (Stable at `.0260`) |
+| **Cylinder 6** | `.0270` | 10.60 – 10.70 GPH | **11.30 – 11.40 GPH** | 🟢 **Core 5-Cylinder Pack Anchor** |
+| **Cylinder 3** | `.0275` | 10.50 – 10.70 GPH | **11.30 – 11.35 GPH** | 🟢 **Core 5-Cylinder Pack Anchor** |
+| **Cylinder 5** | `.0290` | 10.40 – 10.70 GPH | **11.30 – 11.35 GPH** | 🟢 **Core 5-Cylinder Pack Anchor** |
+
+---
+
+### 🔬 Aerodynamic & Thermodynamic Diagnostic Analysis
+
+#### 1. The Core 5-Cylinder Pack is Exceptional (< 0.20 GPH Spread)
+Cylinders 1, 3, 4, 5, and 6 peaked remarkably close together between **11.30 GPH and 11.50 GPH** (a **0.20 GPH spread** across 5 cylinders). Their minor swapping of peaking order between runs is standard physical variance driven by induction runner turbulence, manifold distribution, sensor immersion, and leaning sweep speed. These five cylinders are essentially at their mechanical tolerance limit and require **no further adjustment**.
+
+#### 2. Root Cause of Inverted EGT Motion on Cylinder 2
+During the mixture sweep, the pilot observed Cylinder 2 EGT dropping while all other cylinders' EGTs were rising, and vice versa. 
+* **The Physics**: In a GAMI sweep, the leanest cylinder (smallest nozzle / least fuel relative to airflow) reaches stoichiometric peak EGT **first** at a higher total engine fuel flow.
+* Because Cylinder 2 was choked down to `.0265`, it peaked at **12.65 GPH**. As leaning continued through 12.0 down to 11.3 GPH, Cylinders 1, 3, 4, 5, and 6 were on the Rich-of-Peak (ROP) side of their combustion curves with rising EGTs. Meanwhile, Cylinder 2 had already crossed over to the Lean-of-Peak (LOP) side with falling EGTs.
+* This produced the inverted visual motion on the engine monitor: Cylinder 2 was running LOP while the rest of the engine was still ROP.
+
+#### 3. Root Cause of Engine Roughness & High EGT Spike at 9.9 GPH
+When the engine was leaned further to ~9.9 GPH:
+* The core 5-cylinder pack was operating at **1.4 to 1.5 GPH LOP** (ideal smooth cruise range).
+* Cylinder 2 was operating at **2.75 GPH LOP** (extreme lean starvation).
+* At 2.75 GPH LOP, flame propagation velocity dropped so drastically that combustion was still underway when the exhaust valve opened, torching the EGT probe to **1,430.6°F** while producing almost no mechanical power (Cyl 2 CHT collapsed to **280.4°F**). Intermittent misfiring on Cylinder 2 caused the severe engine roughness.
+
+#### 4. Cylinder 2 Climb CHT Spikes
+In high-power climb (full throttle, rich mixture), Cylinder 2 experienced elevated CHTs (peaking at **404°F** during initial climb on Nov 16). Because the `.0265` nozzle severely starved Cylinder 2 of liquid fuel, it received insufficient evaporative charge cooling, making it thermal-limited in climb.
+
+---
+
+### 🚀 Path Forward: Round 4 Restrictor Optimization Plan
+To eliminate Cylinder 2's lean starvation, align its peak with the 11.30–11.50 GPH pack, and restore climb evaporative cooling:
+
+1. **Target Action (Cylinder 2)**: Replace the `.0265` restrictor on Cylinder 2 with the **`.0280`** restrictor available in the hangar toolbox (ex-Cylinder 5 / original baseline progression).
+2. **Leave Cylinders 1, 3, 4, 5, and 6 Untouched**:
+   - Cyl 1: `.0290` (Retain)
+   - Cyl 3: `.0275` (Retain)
+   - Cyl 4: `.0260` (Retain)
+   - Cyl 5: `.0290` (Retain)
+   - Cyl 6: `.0270` (Retain)
+3. **Round 4 Target Layout**:
+   * **Cyl 1**: `.0290` | **Cyl 2**: **`.0280`** | **Cyl 3**: `.0275` | **Cyl 4**: `.0260` | **Cyl 5**: `.0290` | **Cyl 6**: `.0270`
+4. **Expected Engineering Outcome**:
+   - Cylinder 2 orifice area increases by **+11.7%** (from `.0265` to `.0280`), shifting its peak fuel flow down by ~1.3 GPH into direct alignment with the 11.30–11.50 GPH pack.
+   - Restores evaporative charge cooling during takeoff and climb, keeping Cylinder 2 CHTs well below 380°F.
+   - Eliminates deep LOP misfire at 10.0–11.0 GPH, restoring turbine-smooth cruise operation.
+5. **Hangar Inventory Ledger**:
+   - **Installed on Engine**: Cyl 1: `.0290` | Cyl 2: `.0280` | Cyl 3: `.0275` | Cyl 4: `.0260` | Cyl 5: `.0290` | Cyl 6: `.0270`
+   - **Spares in Toolbox**: `.0265` *(ex-Cyl 2)*, `.0270` *(ex-Cyl 2)*, `.0285`, `.0285`, `.0300`
+
+################################################################################
+# END OF TUNING REPORT 4 (November 16, 2026)
 ################################################################################
