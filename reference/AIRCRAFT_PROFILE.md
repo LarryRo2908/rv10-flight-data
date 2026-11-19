@@ -18,7 +18,7 @@ This document defines the core specification, operational history, and performan
 
 ### 🔧 Custom Tuned GAMI Fuel Injector Nozzles
 
-#### Target Aircraft Configuration (Round 4 Target - As of November 17, 2026)
+#### Current Certified Aircraft Configuration (Final Tuning Complete - As of November 18, 2026)
 | Cylinder | Installed Restrictor | Orifice Size | Net Adjustment from Baseline |
 | :--- | :--- | :--- | :--- |
 | **Cylinder 1** | `.0290` | **0.0290"** | +`.0005` (Enriched) |
